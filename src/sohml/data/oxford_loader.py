@@ -1,6 +1,6 @@
 """Oxford Battery Degradation Dataset 1 loader."""
 from pathlib import Path
-from typing import List
+from typing import List, Optional
 from ..contracts.schemas import DatasetBundle
 
 class OxfordBatteryLoader:
