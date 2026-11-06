@@ -1,0 +1,35 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Distribution / packaging
+build/
+dist/
+*.egg-info/
+
+# Virtual environments
+.env
+.venv
+venv/
+
+# Datasets, caches & raw data (DO NOT COMMIT)
+data/raw/**
+!data/raw/**/
+!data/raw/**/.gitkeep
+data/processed/**
+!data/processed/**/
+!data/processed/**/.gitkeep
+data/cache/**
+!data/cache/**/
+!data/cache/**/.gitkeep
+
+# Outputs, logs & checkpoints (DO NOT COMMIT)
+outputs/**
+!outputs/**/
+!outputs/**/.gitkeep
+*.log
+
+# Pytest / coverage
+.pytest_cache/
+.coverage
