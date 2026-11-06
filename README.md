@@ -79,7 +79,7 @@ The codebase is structured around a 3-person non-blocking ownership protocol:
 | **Data Engineer 2 (DE2)** | 40+ candidate features (`dQ/dV`, `dT/dV`, Numba $SampEn$), 10 mV cache, LOCO splitters, two-stage baselines, Wilcoxon/Holm stats | `src/sohml/features/`, `splits/`, `baselines/`, `evaluation/statistics.py` |
 | **Model Trainer (ML1)** | Stacked ensemble, multi-objective search (NSGA-II/III, Hybrid), knee selection, joint baselines, run orchestration, conformal UQ | `src/sohml/models/`, `optimization/`, `orchestration/`, `evaluation/conformal.py` |
 
-*See `TEAM_WORK_DIVISION.md` for daily interface contracts and milestone gates.*
+*See `docs/data_contracts.md` and `docs/experiment_protocol.md` for interface contracts and protocol specifications.*
 
 ---
 
