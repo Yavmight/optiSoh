@@ -1,0 +1,33 @@
+# Global default configuration for sohML
+
+voltage_window:
+  v_min: 3.60
+  v_max: 4.10
+  min_width: 0.15
+  quantization_step: 0.01  # 10 mV grid for fast window caching
+  grid_step: 0.002         # 2 mV uniform resampled curve grid
+
+optimization:
+  budget: 1000             # Total fitness evaluations per fold
+  population_size: 40
+  generations: 25
+  n_objectives: 4
+  objectives:
+    - mean_cell_rmse
+    - worst_cell_rmse
+    - feature_fraction
+    - model_complexity
+  knee_guard_factor: 1.25  # Reject Pareto points with RMSE > 1.25 * median front RMSE
+
+evaluation:
+  seeds: [42, 123, 999]
+  inner_folds: 4
+  oof_folds: 3
+  significance_alpha: 0.05
+  conformal_confidence: [0.90, 0.95]
+
+paths:
+  raw_data: "data/raw"
+  processed_data: "data/processed"
+  cache_dir: "data/cache"
+  outputs_dir: "outputs"

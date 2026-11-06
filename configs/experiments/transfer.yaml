@@ -1,0 +1,11 @@
+experiment_name: "cross_dataset_transfer"
+pairs:
+  - train: "nasa"
+    test: "oxford"
+  - train: "oxford"
+    test: "nasa"
+  - train: "sandia"
+    test: "oxford"
+  - train: "nasa"
+    test: "sandia"
+conformal_intervals: [0.90, 0.95]

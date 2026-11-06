@@ -1,0 +1,51 @@
+# Dataset configurations, nominal specs, and cell filters
+
+nasa:
+  name: "NASA Li-ion Battery Aging Dataset"
+  nominal_capacity: 2.0  # Ah
+  cutoff_voltage: 4.2
+  cc_current: 1.5       # A
+  temperature_c: 24.0
+  core_cells:
+    - "B0005"
+    - "B0006"
+    - "B0007"
+    - "B0018"
+  candidate_extra_cells:
+    - "B0025"
+    - "B0026"
+    - "B0027"
+    - "B0028"
+    - "B0033"
+    - "B0034"
+  eol_soh_threshold: 80.0
+
+oxford:
+  name: "Oxford Battery Degradation Dataset 1"
+  nominal_capacity: 0.74 # Ah (Kokam SLPB533459H4)
+  cutoff_voltage: 4.2
+  cc_current: 0.74      # A (1C rate in C1ch characterization)
+  temperature_c: 40.0
+  cells:
+    - "Cell1"
+    - "Cell2"
+    - "Cell3"
+    - "Cell4"
+    - "Cell5"
+    - "Cell6"
+    - "Cell7"
+    - "Cell8"
+  charge_key: "C1ch"
+  discharge_key: "C1dc"
+  eol_soh_threshold: 80.0
+
+sandia:
+  name: "Sandia National Laboratories (SNL Preger 2020)"
+  chemistries: ["NCA", "NMC"]
+  nominal_capacity_nca: 3.2  # Ah (Panasonic NCR18650B)
+  nominal_capacity_nmc: 3.0  # Ah (LG Chem INR18650HG2)
+  cutoff_voltage: 4.2
+  cc_rate: 0.5               # 0.5C charge
+  filter_soc_range: "0-100"   # Only cells cycled over full SOC range
+  include_temperatures: [15, 25, 35]
+  eol_soh_threshold: 80.0

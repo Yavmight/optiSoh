@@ -1,0 +1,10 @@
+experiment_name: "smoke_test"
+dataset: "synthetic"
+n_cells: 4
+cycles_per_cell: 30
+budget: 20
+population_size: 10
+generations: 2
+seeds: [42, 123]
+run_baselines: true
+run_transfer: false

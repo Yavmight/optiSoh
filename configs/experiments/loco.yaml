@@ -1,0 +1,16 @@
+experiment_name: "loco_benchmark"
+datasets: ["nasa", "oxford", "sandia"]
+budget: 1000
+population_size: 40
+generations: 25
+seeds: [42, 123, 999]
+methods:
+  - "nsga2"
+  - "nsga3"
+  - "hybrid_adepso"
+  - "fixed_default"
+  - "lasso_tuned"
+  - "mi_tuned"
+  - "shap_rfe_tuned"
+  - "random_search"
+  - "optuna_tpe"
