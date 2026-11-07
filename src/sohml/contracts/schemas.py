@@ -1,7 +1,7 @@
 """Core data schemas exchanged across DE1, DE2, and ML1."""
 
 from dataclasses import dataclass, field
-from typing import Dict, List
+from typing import Dict, List, Optional
 
 import numpy as np
 
@@ -27,14 +27,35 @@ class CanonicalCycleGrid:
 
 @dataclass
 class DatasetBundle:
-    """Collection of canonical cycles belonging to a dataset."""
+    """Collection of canonical cycles belonging to a dataset, supporting homogeneous and heterogeneous cohorts."""
 
     name: str
     cell_ids: List[str]
     cycles: List[CanonicalCycleGrid]
-    nominal_capacity: float
-    ambient_temp_c: float
+    nominal_capacity: Optional[float] = None
+    ambient_temp_c: Optional[float] = None
+    cell_nominal_capacities: Dict[str, float] = field(default_factory=dict)
+    cell_ambient_temps: Dict[str, float] = field(default_factory=dict)
     metadata: Dict = field(default_factory=dict)
+
+    def get_nominal_capacity(self, cell_id: Optional[str] = None) -> float:
+        """Return nominal capacity for a specific cell, or dataset-level default."""
+        if cell_id is not None and cell_id in self.cell_nominal_capacities:
+            return self.cell_nominal_capacities[cell_id]
+        if self.nominal_capacity is not None:
+            return self.nominal_capacity
+        for c in self.cycles:
+            if cell_id is None or c.cell_id == cell_id:
+                return c.nominal_capacity
+        return 1.0
+
+    def get_ambient_temp(self, cell_id: Optional[str] = None) -> float:
+        """Return ambient temperature for a specific cell, or dataset-level default."""
+        if cell_id is not None and cell_id in self.cell_ambient_temps:
+            return self.cell_ambient_temps[cell_id]
+        if self.ambient_temp_c is not None:
+            return self.ambient_temp_c
+        return 25.0
 
 
 @dataclass

@@ -4,6 +4,7 @@ from typing import Optional
 
 import numpy as np
 from sklearn.base import BaseEstimator, RegressorMixin
+from sklearn.ensemble import RandomForestRegressor
 from sklearn.feature_selection import mutual_info_regression
 from sklearn.linear_model import LassoCV
 
@@ -26,7 +27,7 @@ class TwoStageFeatureSelectionBaseline(BaseEstimator, RegressorMixin):
         self.n_features_to_select = n_features_to_select
         self.random_state = random_state
         self.selected_indices_: Optional[np.ndarray] = None
-        self.model = StackedSOHRegressor()
+        self.model = StackedSOHRegressor(random_state=self.random_state)
 
     def select_features(self, X: np.ndarray, y: np.ndarray) -> np.ndarray:
         """Select top features based on specified selector method."""
@@ -47,8 +48,6 @@ class TwoStageFeatureSelectionBaseline(BaseEstimator, RegressorMixin):
 
         elif self.selector == "shap":
             # Fast tree-based feature selection using Random Forest importances as proxy
-            from sklearn.ensemble import RandomForestRegressor
-
             rf = RandomForestRegressor(n_estimators=50, max_depth=5, random_state=self.random_state)
             rf.fit(X, y)
             return np.argsort(rf.feature_importances_)[::-1][:k]
@@ -56,11 +55,17 @@ class TwoStageFeatureSelectionBaseline(BaseEstimator, RegressorMixin):
         else:
             raise ValueError(f"Unknown selector method: {self.selector}")
 
-    def fit(self, X: np.ndarray, y: np.ndarray, cell_indices: Optional[np.ndarray] = None):
+    def fit(
+        self,
+        X: np.ndarray,
+        y: np.ndarray,
+        sample_weight: Optional[np.ndarray] = None,
+        cell_indices: Optional[np.ndarray] = None,
+    ):
         """Fit feature selector on training cells, then fit the stacked regressor."""
         self.selected_indices_ = self.select_features(X, y)
         X_sub = X[:, self.selected_indices_]
-        self.model.fit(X_sub, y, cell_indices=cell_indices)
+        self.model.fit(X_sub, y, sample_weight=sample_weight, cell_indices=cell_indices)
         return self
 
     def predict(self, X: np.ndarray) -> np.ndarray:
