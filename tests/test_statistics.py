@@ -1,6 +1,8 @@
 """Tests for evaluation metrics and statistical tests."""
+
 import numpy as np
 from sohml.evaluation.metrics import compute_regression_metrics
+
 
 def test_metrics():
     y_true = np.array([100.0, 90.0, 80.0])

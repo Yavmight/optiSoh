@@ -1,5 +1,7 @@
 """Accuracy-guarded Utopia Knee-Point selector on the Pareto front."""
+
 import numpy as np
+
 
 def select_guarded_knee_point(pareto_costs: np.ndarray, guard_factor: float = 1.25) -> int:
     """

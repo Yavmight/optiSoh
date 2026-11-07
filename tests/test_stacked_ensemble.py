@@ -1,6 +1,8 @@
 """Tests for StackedSOHRegressor."""
+
 import numpy as np
 from sohml.models.stacked_ensemble import StackedSOHRegressor
+
 
 def test_stacked_ensemble_fit_predict():
     X = np.random.randn(30, 5)

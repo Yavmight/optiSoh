@@ -1,9 +1,13 @@
 """Outer Leave-One-Cell-Out and Inner GroupKFold splitters."""
+
 from typing import Generator, List, Tuple
+
 import numpy as np
+
 
 class OuterLOCOSplitter:
     """Outer Leave-One-Cell-Out cross-validator."""
+
     def __init__(self, cell_ids: List[str]):
         self.cell_ids = np.array(cell_ids)
 

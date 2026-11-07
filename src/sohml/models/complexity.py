@@ -1,5 +1,7 @@
 """Normalized model complexity metric (Objective f4)."""
+
 import numpy as np
+
 
 def compute_model_complexity(model) -> float:
     """Compute normalized complexity in [0, 1] across SVR support vectors and tree depths."""

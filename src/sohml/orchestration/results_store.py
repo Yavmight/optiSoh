@@ -1,6 +1,7 @@
 """Parquet-backed results and metrics store."""
+
 from pathlib import Path
-import pandas as pd
+
 
 class ResultsStore:
     def __init__(self, out_dir: Path):

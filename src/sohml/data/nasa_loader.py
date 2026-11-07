@@ -1,10 +1,14 @@
 """NASA PCoE Li-ion Battery Aging Dataset loader."""
+
 from pathlib import Path
-from typing import Optional, List
+from typing import List
+
 from ..contracts.schemas import DatasetBundle
+
 
 class NasaBatteryLoader:
     """Parses NASA PCoE MATLAB structures and cleaned CSVs."""
+
     def __init__(self, raw_dir: Path, nominal_capacity: float = 2.0):
         self.raw_dir = Path(raw_dir)
         self.nominal_capacity = nominal_capacity

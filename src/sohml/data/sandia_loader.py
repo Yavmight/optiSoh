@@ -1,10 +1,14 @@
 """Sandia National Laboratories (SNL Preger 2020) Battery Archive loader."""
+
 from pathlib import Path
 from typing import List, Optional
+
 from ..contracts.schemas import DatasetBundle
+
 
 class SandiaBatteryLoader:
     """Loads 18650 NCA and NMC cells cycled over 0-100% SOC with thermocouple logs."""
+
     def __init__(self, raw_dir: Path):
         self.raw_dir = Path(raw_dir)
 

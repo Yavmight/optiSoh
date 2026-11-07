@@ -3,15 +3,40 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+# C extensions
+*.so
+
 # Distribution / packaging
 build/
 dist/
 *.egg-info/
+develop-eggs/
+eggs/
+.eggs/
+parts/
+sdist/
+var/
+wheels/
+*.egg
 
 # Virtual environments
 .env
 .venv
 venv/
+ENV/
+
+# IDEs & Editors
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# Jupyter Notebook checkpoints
+.ipynb_checkpoints/
+
+# Linter & Formatter caches
+.ruff_cache/
+.mypy_cache/
 
 # Datasets, caches & raw data (DO NOT COMMIT)
 data/raw/**
@@ -24,12 +49,23 @@ data/cache/**
 !data/cache/**/
 !data/cache/**/.gitkeep
 
-# Outputs, logs & checkpoints (DO NOT COMMIT)
+# Outputs, logs, models & checkpoints (DO NOT COMMIT)
 outputs/**
 !outputs/**/
 !outputs/**/.gitkeep
 *.log
+*.joblib
+*.pkl
+*.pt
+*.onnx
+checkpoint/
 
-# Pytest / coverage
+# Pytest & Coverage
 .pytest_cache/
 .coverage
+htmlcov/
+
+# OS-generated files
+Thumbs.db
+desktop.ini
+.DS_Store

@@ -1,6 +1,8 @@
 """Numba-accelerated Sample Entropy and signal complexity metrics."""
+
 import numpy as np
 from numba import njit
+
 
 @njit(fastmath=True)
 def sample_entropy_numba(signal: np.ndarray, m: int = 2, r: float = 0.2) -> float:

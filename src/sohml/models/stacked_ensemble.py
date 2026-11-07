@@ -1,15 +1,19 @@
 """Stacked SOH Regressor: SVR + Random Forest + XGBoost with Ridge meta-learner."""
+
 from typing import Optional
+
 import numpy as np
 from sklearn.base import BaseEstimator, RegressorMixin, clone
-from sklearn.svm import SVR
 from sklearn.ensemble import RandomForestRegressor
-from xgboost import XGBRegressor
 from sklearn.linear_model import Ridge
-from sklearn.model_selection import KFold, GroupKFold
+from sklearn.model_selection import GroupKFold, KFold
+from sklearn.svm import SVR
+from xgboost import XGBRegressor
+
 
 class StackedSOHRegressor(BaseEstimator, RegressorMixin):
     """Stacked ensemble using cell-grouped out-of-fold predictions for Ridge meta-learning."""
+
     def __init__(
         self,
         svr_c: float = 10.0,

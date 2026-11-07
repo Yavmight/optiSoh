@@ -1,6 +1,9 @@
 """Decision vector encoding, decoding, and repair operators."""
+
 from dataclasses import dataclass
+
 import numpy as np
+
 
 @dataclass
 class CoOptDecisionVector:
@@ -8,6 +11,7 @@ class CoOptDecisionVector:
     v_end: float
     feature_mask: np.ndarray  # Boolean array of length D
     hyperparams: dict
+
 
 def repair_decision_vector(v_start: float, v_end: float, feature_mask: np.ndarray, min_width: float = 0.15):
     """Enforce minimum window width and ensure at least one feature is active."""

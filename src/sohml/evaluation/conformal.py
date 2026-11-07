@@ -1,8 +1,11 @@
 """Cell-grouped split conformal prediction for calibrated SOH uncertainty intervals."""
+
 import numpy as np
+
 
 class CellGroupedConformalInterval:
     """Calibrates conformal intervals respecting cell group structures."""
+
     def __init__(self, alpha: float = 0.10):
         self.alpha = alpha
         self.q_val = 0.0

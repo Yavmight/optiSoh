@@ -1,5 +1,7 @@
 """Tests verifying strict evaluation budget parity across methods."""
+
 from sohml.optimization.base import EvaluationBudgetCounter
+
 
 def test_budget_counter():
     counter = EvaluationBudgetCounter(max_evaluations=100)

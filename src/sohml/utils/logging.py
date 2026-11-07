@@ -1,5 +1,7 @@
 """Logging setup."""
+
 import logging
+
 
 def setup_logger(name: str = "sohml") -> logging.Logger:
     logger = logging.getLogger(name)

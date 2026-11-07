@@ -1,5 +1,7 @@
 """Tests for outer LOCO and inner GroupKFold splitters."""
+
 from sohml.splits.splitters import OuterLOCOSplitter
+
 
 def test_outer_loco():
     splitter = OuterLOCOSplitter(cell_ids=["C1", "C2", "C3"])

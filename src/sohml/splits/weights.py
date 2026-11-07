@@ -1,5 +1,7 @@
 """Cell sample weighting to prevent cells with many cycles from dominating."""
+
 import numpy as np
+
 
 def compute_cell_sample_weights(cell_indices: np.ndarray) -> np.ndarray:
     """Return sample weights inversely proportional to each cell's cycle count."""

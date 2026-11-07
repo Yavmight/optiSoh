@@ -85,6 +85,9 @@ The codebase is structured around a 3-person non-blocking ownership protocol:
 
 ## 6. Quickstart & Usage
 
+> [!NOTE]
+> **Implementation Status**: The codebase currently provides complete schemas, synthetic dataset generators, stacked model architectures, and testing harnesses. Pipeline execution scripts (`scripts/build_processed.py`, `scripts/build_cache.py`, `scripts/make_report.py`) are entrypoint scaffolds that will be fleshed out as raw datasets are downloaded and processed.
+
 ### Setup Virtual Environment
 ```powershell
 # Navigate to project root

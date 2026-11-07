@@ -1,6 +1,8 @@
 """Tests for 40+ candidate health indicators."""
-from sohml.contracts.feature_rules import validate_feature_names, FORBIDDEN_FEATURES
+
 import pytest
+from sohml.contracts.feature_rules import FORBIDDEN_FEATURES, validate_feature_names
+
 
 def test_forbidden_features():
     for f in FORBIDDEN_FEATURES:

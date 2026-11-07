@@ -1,5 +1,7 @@
 """The 4 minimized objectives for co-optimization."""
+
 import numpy as np
+
 
 def compute_objectives(cell_rmses: dict, feature_mask: np.ndarray, model_complexity: float):
     """

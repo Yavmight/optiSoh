@@ -1,7 +1,11 @@
 """Deterministic synthetic battery dataset generator for zero-blocking parallel development."""
-import numpy as np
+
 from typing import List
+
+import numpy as np
+
 from .schemas import CanonicalCycleGrid, DatasetBundle
+
 
 def generate_synthetic_battery_dataset(
     n_cells: int = 4,
@@ -14,7 +18,7 @@ def generate_synthetic_battery_dataset(
     v_grid = np.arange(3.50, 4.182, 0.002)
     n_pts = len(v_grid)
     cycles_list: List[CanonicalCycleGrid] = []
-    cell_names = [f"SYN_{i+1:02d}" for i in range(n_cells)]
+    cell_names = [f"SYN_{i + 1:02d}" for i in range(n_cells)]
 
     for cell_idx, cell_id in enumerate(cell_names):
         fade_rate = rng.uniform(0.004, 0.008)

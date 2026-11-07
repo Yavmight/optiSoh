@@ -1,10 +1,14 @@
 """Oxford Battery Degradation Dataset 1 loader."""
+
 from pathlib import Path
 from typing import List, Optional
+
 from ..contracts.schemas import DatasetBundle
+
 
 class OxfordBatteryLoader:
     """Parses Oxford_Battery_Degradation_Dataset_1.mat C1ch characterization cycles."""
+
     def __init__(self, mat_path: Path, nominal_capacity: float = 0.74):
         self.mat_path = Path(mat_path)
         self.nominal_capacity = nominal_capacity

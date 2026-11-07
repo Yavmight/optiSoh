@@ -1,10 +1,14 @@
 """Quantized 10 mV window feature cache for O(1) metaheuristic evaluation lookups."""
+
 from pathlib import Path
-import numpy as np
 from typing import Dict, Tuple
+
+import numpy as np
+
 
 class WindowFeatureCache:
     """Caches precomputed (N_cycles, D_features) matrices for discrete (V_start, V_end) pairs."""
+
     def __init__(self, cache_dir: Path, step_mv: int = 10):
         self.cache_dir = Path(cache_dir)
         self.step_mv = step_mv
