@@ -1,4 +1,4 @@
-# sohML: Window-Adaptive Co-Optimization for Battery SOH Regression
+# optiSoh: Window-Adaptive Co-Optimization for Battery SOH Regression
 
 A leakage-safe machine learning and optimization framework for **Window-Adaptive, Multi-Objective Metaheuristic Co-Optimization of Features and Hyperparameters for Partial-Charging Battery State-of-Health (SOH) Regression**.
 
@@ -75,9 +75,9 @@ The codebase is structured around a 3-person non-blocking ownership protocol:
 
 | Role | Core Ownership | Key Directories |
 |---|---|---|
-| **Data Engineer 1 (DE1)** | Ingestion, CC quality control, nominal normalization, 2 mV grid harmonization, cross-dataset transfer harness | `src/sohml/data/`, `evaluation/transfer.py`, `notebooks/01_data_qc.ipynb` |
-| **Data Engineer 2 (DE2)** | 40+ candidate features (`dQ/dV`, `dT/dV`, Numba $SampEn$), 10 mV cache, LOCO splitters, two-stage baselines, Wilcoxon/Holm stats | `src/sohml/features/`, `splits/`, `baselines/`, `evaluation/statistics.py` |
-| **Model Trainer (ML1)** | Stacked ensemble, multi-objective search (NSGA-II/III, Hybrid), knee selection, joint baselines, run orchestration, conformal UQ | `src/sohml/models/`, `optimization/`, `orchestration/`, `evaluation/conformal.py` |
+| **Data Engineer 1 (DE1)** | Ingestion, CC quality control, nominal normalization, 2 mV grid harmonization, cross-dataset transfer harness | `src/optiSoh/data/`, `evaluation/transfer.py`, `notebooks/01_data_qc.ipynb` |
+| **Data Engineer 2 (DE2)** | 40+ candidate features (`dQ/dV`, `dT/dV`, Numba $SampEn$), 10 mV cache, LOCO splitters, two-stage baselines, Wilcoxon/Holm stats | `src/optiSoh/features/`, `splits/`, `baselines/`, `evaluation/statistics.py` |
+| **Model Trainer (ML1)** | Stacked ensemble, multi-objective search (NSGA-II/III, Hybrid), knee selection, joint baselines, run orchestration, conformal UQ | `src/optiSoh/models/`, `optimization/`, `orchestration/`, `evaluation/conformal.py` |
 
 *See `docs/data_contracts.md` and `docs/experiment_protocol.md` for interface contracts and protocol specifications.*
 
@@ -88,7 +88,7 @@ The codebase is structured around a 3-person non-blocking ownership protocol:
 ### Setup Virtual Environment
 ```powershell
 # Navigate to project root
-cd "sohML"
+cd "optiSoh"
 
 # Create and activate virtual environment
 python -m venv .venv
