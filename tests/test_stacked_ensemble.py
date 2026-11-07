@@ -1,15 +1,35 @@
 """Tests for StackedSOHRegressor and model complexity calculation."""
 
 import numpy as np
+import pytest
 from sklearn.base import clone
 from sohml.models.complexity import compute_model_complexity
 from sohml.models.stacked_ensemble import StackedSOHRegressor
 
 
+def test_stacked_ensemble_requires_cell_indices():
+    """Verify ValueError is raised if cell_indices is omitted without allow_random_kfold=True."""
+    X = np.random.randn(30, 5)
+    y = np.linspace(100, 70, 30)
+    model = StackedSOHRegressor(rf_n_estimators=10, xgb_n_estimators=10, allow_random_kfold=False)
+    with pytest.raises(ValueError, match="cell_indices must be provided"):
+        model.fit(X, y)
+
+
 def test_stacked_ensemble_fit_predict():
     X = np.random.randn(30, 5)
     y = np.linspace(100, 70, 30)
+    cell_indices = np.repeat(["Cell_1", "Cell_2", "Cell_3"], 10)
     model = StackedSOHRegressor(rf_n_estimators=10, xgb_n_estimators=10, random_state=42)
+    model.fit(X, y, cell_indices=cell_indices)
+    preds = model.predict(X)
+    assert preds.shape == (30,)
+
+
+def test_stacked_ensemble_allow_random_kfold():
+    X = np.random.randn(30, 5)
+    y = np.linspace(100, 70, 30)
+    model = StackedSOHRegressor(rf_n_estimators=10, xgb_n_estimators=10, random_state=42, allow_random_kfold=True)
     model.fit(X, y)
     preds = model.predict(X)
     assert preds.shape == (30,)
@@ -30,11 +50,12 @@ def test_stacked_ensemble_grouped_splits():
 def test_stacked_ensemble_sample_weight():
     X = np.random.randn(30, 5)
     y = np.linspace(100, 70, 30)
+    cell_indices = np.repeat(["Cell_1", "Cell_2", "Cell_3"], 10)
     weights = np.ones(30)
     weights[:5] = 5.0
 
     model = StackedSOHRegressor(rf_n_estimators=10, xgb_n_estimators=10, random_state=42)
-    model.fit(X, y, sample_weight=weights)
+    model.fit(X, y, sample_weight=weights, cell_indices=cell_indices)
     preds = model.predict(X)
     assert preds.shape == (30,)
 
@@ -54,8 +75,9 @@ def test_stacked_ensemble_set_params_and_clone():
 def test_compute_model_complexity():
     X = np.random.randn(50, 4)
     y = np.linspace(100, 80, 50)
+    cell_indices = np.repeat(["Cell_1", "Cell_2"], 25)
     model = StackedSOHRegressor(rf_n_estimators=10, xgb_n_estimators=10, random_state=42)
-    model.fit(X, y)
+    model.fit(X, y, cell_indices=cell_indices)
 
     # Complexity should be normalized in [0, 1]
     comp = compute_model_complexity(model, n_train_samples=len(X))

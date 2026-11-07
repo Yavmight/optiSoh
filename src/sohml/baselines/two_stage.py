@@ -22,12 +22,17 @@ class TwoStageFeatureSelectionBaseline(BaseEstimator, RegressorMixin):
         selector: str = "lasso",
         n_features_to_select: int = 12,
         random_state: int = 42,
+        allow_random_kfold: bool = True,
     ):
         self.selector = selector
         self.n_features_to_select = n_features_to_select
         self.random_state = random_state
+        self.allow_random_kfold = allow_random_kfold
         self.selected_indices_: Optional[np.ndarray] = None
-        self.model = StackedSOHRegressor(random_state=self.random_state)
+        self.model = StackedSOHRegressor(
+            random_state=self.random_state,
+            allow_random_kfold=self.allow_random_kfold,
+        )
 
     def select_features(self, X: np.ndarray, y: np.ndarray) -> np.ndarray:
         """Select top features based on specified selector method."""

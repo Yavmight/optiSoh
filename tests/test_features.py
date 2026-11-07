@@ -29,3 +29,20 @@ def test_feature_registry_exact_match():
     assert len(feats) == 42
     for val in feats.values():
         assert np.isfinite(val)
+
+
+def test_feature_extraction_on_synthetic_cycle(synthetic_bundle):
+    """Test feature extraction on a slice from synthetic bundle fixture."""
+    cycle = synthetic_bundle.cycles[0]
+    mask = (cycle.v_grid >= 3.65) & (cycle.v_grid <= 4.05)
+    feats = extract_all_window_features(
+        cycle.v_grid[mask],
+        cycle.q_norm[mask],
+        cycle.dq_dv[mask],
+        cycle.delta_t[mask],
+        cycle.dt_dv[mask],
+        cycle.tau[mask],
+    )
+    assert len(feats) == 42
+    for val in feats.values():
+        assert np.isfinite(val)

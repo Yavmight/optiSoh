@@ -29,6 +29,7 @@ class StackedSOHRegressor(BaseEstimator, RegressorMixin):
         ridge_alpha: float = 1.0,
         n_splits: int = 3,
         random_state: int = 42,
+        allow_random_kfold: bool = False,
     ):
         self.svr_c = svr_c
         self.svr_gamma = svr_gamma
@@ -43,6 +44,7 @@ class StackedSOHRegressor(BaseEstimator, RegressorMixin):
         self.ridge_alpha = ridge_alpha
         self.n_splits = n_splits
         self.random_state = random_state
+        self.allow_random_kfold = allow_random_kfold
 
     def _make_svr(self) -> SVR:
         return SVR(C=self.svr_c, gamma=self.svr_gamma, epsilon=self.svr_epsilon)
@@ -104,6 +106,7 @@ class StackedSOHRegressor(BaseEstimator, RegressorMixin):
         If cell_indices are provided, GroupKFold is used so the meta-learner learns
         how base models generalize across unseen cells.
         Supports sample_weight weighting across base learners and meta-learner.
+        Raises ValueError if cell_indices is None unless allow_random_kfold=True.
         """
         X = np.asarray(X)
         y = np.asarray(y)
@@ -126,8 +129,20 @@ class StackedSOHRegressor(BaseEstimator, RegressorMixin):
                 effective_splits = min(self.n_splits, len(unique_cells))
                 cv = GroupKFold(n_splits=effective_splits)
                 splits = list(cv.split(X, y, groups=cell_indices))
+            elif not self.allow_random_kfold:
+                raise ValueError(
+                    f"cell_indices contains only {len(unique_cells)} unique cell(s). "
+                    "At least 2 cells are required for cell-disjoint stacking. "
+                    "Set allow_random_kfold=True to permit cycle-level KFold."
+                )
 
         if not use_groups:
+            if not self.allow_random_kfold and cell_indices is None:
+                raise ValueError(
+                    "cell_indices must be provided to fit() to enforce cell-disjoint splits and prevent intra-cell "
+                    "cycle leakage across folds. Set allow_random_kfold=True to override for synthetic/unlabeled benchmarks."
+                )
+
             effective_splits = min(self.n_splits, n_samples)
             if effective_splits < 2:
                 oof_preds[:, 0] = y
