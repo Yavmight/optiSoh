@@ -1,9 +1,5 @@
 experiment_name: "loco_benchmark"
 datasets: ["nasa", "oxford", "sandia"]
-budget: 1000
-population_size: 40
-generations: 25
-seeds: [42, 123, 999]
 methods:
   - "nsga2"
   - "nsga3"

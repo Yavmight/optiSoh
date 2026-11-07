@@ -4,6 +4,7 @@ from typing import List
 
 import numpy as np
 
+from .constants import DEFAULT_V_GRID_MAX, DEFAULT_V_GRID_MIN, DEFAULT_V_GRID_STEP
 from .schemas import CanonicalCycleGrid, DatasetBundle
 
 
@@ -15,12 +16,16 @@ def generate_synthetic_battery_dataset(
 ) -> DatasetBundle:
     """Generate realistic synthetic CC battery curves and aging trajectories."""
     rng = np.random.default_rng(seed)
-    v_grid = np.arange(3.50, 4.182, 0.002)
+    v_grid = np.arange(
+        DEFAULT_V_GRID_MIN,
+        DEFAULT_V_GRID_MAX + DEFAULT_V_GRID_STEP / 2,
+        DEFAULT_V_GRID_STEP,
+    )
     n_pts = len(v_grid)
     cycles_list: List[CanonicalCycleGrid] = []
     cell_names = [f"SYN_{i + 1:02d}" for i in range(n_cells)]
 
-    for cell_idx, cell_id in enumerate(cell_names):
+    for _, cell_id in enumerate(cell_names):
         fade_rate = rng.uniform(0.004, 0.008)
         initial_capacity = nominal_capacity * rng.uniform(0.98, 1.02)
 
@@ -36,7 +41,7 @@ def generate_synthetic_battery_dataset(
             dq_dv = np.maximum(dq_dv, 0.01)
 
             # Cumulative Q_norm integral
-            q_norm = np.cumsum(dq_dv) * 0.002
+            q_norm = np.cumsum(dq_dv) * DEFAULT_V_GRID_STEP
             q_norm = (q_norm / q_norm[-1]) * (meas_cap / nominal_capacity)
 
             # Thermal curve

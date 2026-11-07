@@ -1,15 +1,17 @@
 """Quantized 10 mV window feature cache for O(1) metaheuristic evaluation lookups."""
 
 from pathlib import Path
-from typing import Dict, Tuple
+from typing import Dict, Optional, Tuple
 
 import numpy as np
+
+from ..contracts.constants import WINDOW_QUANTIZATION_STEP_MV
 
 
 class WindowFeatureCache:
     """Caches precomputed (N_cycles, D_features) matrices for discrete (V_start, V_end) pairs."""
 
-    def __init__(self, cache_dir: Path, step_mv: int = 10):
+    def __init__(self, cache_dir: Path, step_mv: int = WINDOW_QUANTIZATION_STEP_MV):
         self.cache_dir = Path(cache_dir)
         self.step_mv = step_mv
         self.memory_cache: Dict[Tuple[int, int], np.ndarray] = {}
@@ -20,7 +22,7 @@ class WindowFeatureCache:
         e = int(round(v_end * 1000 / self.step_mv) * self.step_mv)
         return s, e
 
-    def get(self, v_start: float, v_end: float) -> np.ndarray:
+    def get(self, v_start: float, v_end: float) -> Optional[np.ndarray]:
         """Lookup feature matrix for the specified window query."""
         key = self.quantize(v_start, v_end)
         return self.memory_cache.get(key)

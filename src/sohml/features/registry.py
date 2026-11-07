@@ -1,6 +1,14 @@
-"""Catalog of all 42+ candidate health indicators."""
+"""Catalog of all 42 candidate health indicators and unified extractor."""
 
-from typing import List
+from typing import Dict, List
+
+import numpy as np
+
+from .coupling import extract_coupling_features
+from .differential_thermal import extract_thermal_features
+from .entropy import extract_entropy_features
+from .incremental_capacity import extract_ic_features
+from .kinetics import extract_kinetics_features
 
 FEATURE_REGISTRY: List[str] = [
     # IC features (12)
@@ -27,7 +35,7 @@ FEATURE_REGISTRY: List[str] = [
     "dt_kurtosis",
     "temp_ratio_end_start",
     "temp_voltage_slope",
-    # Entropy features (8)
+    # Entropy & Complexity features (8)
     "sampen_voltage",
     "sampen_dqdv",
     "perm_entropy_voltage",
@@ -51,3 +59,26 @@ FEATURE_REGISTRY: List[str] = [
     "vq_arc_length",
     "peak_voltage_ratio_ic_dt",
 ]
+
+
+def extract_all_window_features(
+    v_sub: np.ndarray,
+    q_sub: np.ndarray,
+    dq_sub: np.ndarray,
+    delta_t_sub: np.ndarray,
+    dt_sub: np.ndarray,
+    tau_sub: np.ndarray,
+) -> Dict[str, float]:
+    """Extract all 42 candidate health indicators for a specified window slice."""
+    feats: Dict[str, float] = {}
+    feats.update(extract_ic_features(v_sub, dq_sub))
+    feats.update(extract_thermal_features(v_sub, dt_sub, delta_t_sub))
+    feats.update(extract_entropy_features(v_sub, dq_sub))
+    feats.update(extract_kinetics_features(v_sub, tau_sub, q_sub))
+    feats.update(extract_coupling_features(v_sub, q_sub, dq_sub, dt_sub))
+
+    # Guarantee all registry features exist
+    for k in FEATURE_REGISTRY:
+        if k not in feats:
+            feats[k] = 0.0
+    return feats

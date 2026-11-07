@@ -4,6 +4,7 @@ from pathlib import Path
 from typing import List, Optional
 
 from ..contracts.schemas import DatasetBundle
+from .config_resolver import get_dataset_spec
 
 
 class SandiaBatteryLoader:
@@ -11,13 +12,15 @@ class SandiaBatteryLoader:
 
     def __init__(self, raw_dir: Path):
         self.raw_dir = Path(raw_dir)
+        self.spec = get_dataset_spec("sandia")
 
     def load_cohort(self, chemistries: Optional[List[str]] = None) -> DatasetBundle:
         """Filter and return full-range cycled NCA/NMC cells."""
+        nominal_cap = self.spec.get("nominal_capacity_nca", 3.2)
         return DatasetBundle(
             name="sandia_preger_2020",
             cell_ids=[],
             cycles=[],
-            nominal_capacity=3.2,
-            ambient_temp_c=25.0,
+            nominal_capacity=nominal_cap,
+            ambient_temp_c=self.spec.get("temperature_c", 25.0),
         )

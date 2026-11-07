@@ -5,6 +5,8 @@ from typing import Dict, List
 
 import numpy as np
 
+from .constants import WINDOW_MIN_WIDTH
+
 
 @dataclass
 class CanonicalCycleGrid:
@@ -45,8 +47,10 @@ class WindowQuery:
     def __post_init__(self):
         if self.v_end <= self.v_start:
             raise ValueError(f"v_end ({self.v_end}) must be greater than v_start ({self.v_start})")
-        if (self.v_end - self.v_start) < 0.10:
-            raise ValueError(f"Window width ({self.v_end - self.v_start:.3f} V) is below minimum (0.10 V)")
+        if (self.v_end - self.v_start) < WINDOW_MIN_WIDTH:
+            raise ValueError(
+                f"Window width ({self.v_end - self.v_start:.3f} V) is below minimum ({WINDOW_MIN_WIDTH:.2f} V)"
+            )
 
 
 @dataclass
