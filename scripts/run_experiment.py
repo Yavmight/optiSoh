@@ -2,8 +2,8 @@
 
 import argparse
 
-from sohml.contracts.synthetic import generate_synthetic_battery_dataset
-from sohml.utils.logging import setup_logger
+from optiSoh.contracts.synthetic import generate_synthetic_battery_dataset
+from optiSoh.utils.logging import setup_logger
 
 logger = setup_logger("runner")
 
@@ -15,7 +15,7 @@ def main():
     parser.add_argument("--seeds", type=int, default=2)
     args = parser.parse_args()
 
-    logger.info(f"Starting sohML runner | mode: {args.mode} | budget: {args.budget} | seeds: {args.seeds}")
+    logger.info(f"Starting optiSoh runner | mode: {args.mode} | budget: {args.budget} | seeds: {args.seeds}")
     if args.mode == "smoke":
         bundle = generate_synthetic_battery_dataset(n_cells=4, cycles_per_cell=20)
         logger.info(f"Synthetic smoke dataset ready with {len(bundle.cycles)} cycles.")

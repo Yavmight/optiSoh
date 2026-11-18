@@ -2,8 +2,8 @@
 
 from pathlib import Path
 
-from sohml.data.nasa_loader import NasaBatteryLoader
-from sohml.data.sandia_loader import SandiaBatteryLoader
+from optiSoh.data.nasa_loader import NasaBatteryLoader
+from optiSoh.data.sandia_loader import SandiaBatteryLoader
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
 

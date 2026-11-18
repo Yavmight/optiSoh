@@ -1,7 +1,7 @@
 """Pytest configuration and shared fixtures."""
 
 import pytest
-from sohml.contracts.synthetic import generate_synthetic_battery_dataset
+from optiSoh.contracts.synthetic import generate_synthetic_battery_dataset
 
 
 @pytest.fixture

@@ -3,8 +3,8 @@
 import time
 
 import numpy as np
-from sohml.contracts.synthetic import generate_synthetic_battery_dataset
-from sohml.models.stacked_ensemble import StackedSOHRegressor
+from optiSoh.contracts.synthetic import generate_synthetic_battery_dataset
+from optiSoh.models.stacked_ensemble import StackedSOHRegressor
 
 
 def main():

@@ -1,7 +1,7 @@
 """Tests for outer LOCO, grouped outer K-fold, and inner cell-disjoint splitters."""
 
 import numpy as np
-from sohml.splits.splitters import (
+from optiSoh.splits.splitters import (
     GroupedOuterKFoldSplitter,
     InnerCellDisjointSplitter,
     OuterLOCOSplitter,

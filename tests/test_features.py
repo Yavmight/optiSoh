@@ -2,8 +2,8 @@
 
 import numpy as np
 import pytest
-from sohml.contracts.feature_rules import FORBIDDEN_FEATURES, validate_feature_names
-from sohml.features.registry import FEATURE_REGISTRY, extract_all_window_features
+from optiSoh.contracts.feature_rules import FORBIDDEN_FEATURES, validate_feature_names
+from optiSoh.features.registry import FEATURE_REGISTRY, extract_all_window_features
 
 
 def test_forbidden_features():

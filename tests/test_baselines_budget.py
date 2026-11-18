@@ -1,10 +1,10 @@
 """Tests verifying strict evaluation budget parity across methods and baseline models."""
 
 import numpy as np
-from sohml.baselines.optuna_tpe import OptunaTPEOptimizer
-from sohml.baselines.random_search import RandomSearchOptimizer
-from sohml.baselines.two_stage import TwoStageFeatureSelectionBaseline
-from sohml.optimization.base import EvaluationBudgetCounter
+from optiSoh.baselines.optuna_tpe import OptunaTPEOptimizer
+from optiSoh.baselines.random_search import RandomSearchOptimizer
+from optiSoh.baselines.two_stage import TwoStageFeatureSelectionBaseline
+from optiSoh.optimization.base import EvaluationBudgetCounter
 
 
 def test_budget_counter():

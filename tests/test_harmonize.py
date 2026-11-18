@@ -1,7 +1,7 @@
 """Tests for 2 mV grid harmonization and normalization."""
 
 import numpy as np
-from sohml.contracts.constants import DEFAULT_V_GRID_MAX, DEFAULT_V_GRID_MIN, DEFAULT_V_GRID_STEP
+from optiSoh.contracts.constants import DEFAULT_V_GRID_MAX, DEFAULT_V_GRID_MIN, DEFAULT_V_GRID_STEP
 
 
 def test_v_grid_resolution():

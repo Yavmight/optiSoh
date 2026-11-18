@@ -1,9 +1,9 @@
 """End-to-end canary test verifying zero data leakage from held-out test cell."""
 
 import numpy as np
-from sohml.baselines.two_stage import TwoStageFeatureSelectionBaseline
-from sohml.models.stacked_ensemble import StackedSOHRegressor
-from sohml.splits.preprocessing import FoldIsolatedPreprocessor
+from optiSoh.baselines.two_stage import TwoStageFeatureSelectionBaseline
+from optiSoh.models.stacked_ensemble import StackedSOHRegressor
+from optiSoh.splits.preprocessing import FoldIsolatedPreprocessor
 
 
 def test_scaler_and_imputer_isolation():

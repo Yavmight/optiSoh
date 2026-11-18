@@ -1,7 +1,7 @@
 """Tests for 10 mV quantized window cache with disk persistence."""
 
 import numpy as np
-from sohml.features.window_cache import WindowFeatureCache
+from optiSoh.features.window_cache import WindowFeatureCache
 
 
 def test_cache_quantization():

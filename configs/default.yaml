@@ -1,4 +1,4 @@
-# Global default configuration for sohML
+# Global default configuration for optiSoh
 
 voltage_window:
   v_min: 3.60

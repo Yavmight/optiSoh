@@ -1,7 +1,7 @@
 """Tests for Pareto knee selection and optimizers."""
 
 import numpy as np
-from sohml.optimization.knee import select_guarded_knee_point
+from optiSoh.optimization.knee import select_guarded_knee_point
 
 
 def test_knee_selection():

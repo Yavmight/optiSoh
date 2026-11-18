@@ -3,7 +3,7 @@
 import logging
 
 
-def setup_logger(name: str = "sohml") -> logging.Logger:
+def setup_logger(name: str = "optiSoh") -> logging.Logger:
     logger = logging.getLogger(name)
     if not logger.handlers:
         ch = logging.StreamHandler()

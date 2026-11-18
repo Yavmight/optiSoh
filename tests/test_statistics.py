@@ -1,7 +1,7 @@
 """Tests for evaluation metrics and statistical tests."""
 
 import numpy as np
-from sohml.evaluation.metrics import compute_regression_metrics
+from optiSoh.evaluation.metrics import compute_regression_metrics
 
 
 def test_metrics():

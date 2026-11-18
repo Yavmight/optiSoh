@@ -2,9 +2,9 @@
 
 import numpy as np
 import pytest
+from optiSoh.models.complexity import compute_model_complexity
+from optiSoh.models.stacked_ensemble import StackedSOHRegressor
 from sklearn.base import clone
-from sohml.models.complexity import compute_model_complexity
-from sohml.models.stacked_ensemble import StackedSOHRegressor
 
 
 def test_stacked_ensemble_requires_cell_indices():
