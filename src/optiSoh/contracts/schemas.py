@@ -23,6 +23,17 @@ class CanonicalCycleGrid:
     soh_true: float  # Ground truth SOH (%) = 100 * (Capacity / Initial_Capacity)
     discharge_capacity: float  # Measured discharge capacity (Ah)
     nominal_capacity: float  # Rated nominal capacity (Ah)
+    is_regeneration: bool = False  # True if cycle exhibits post-rest capacity regeneration jump
+    is_below_eol: bool = False  # True if soh_true < dataset eol_soh_threshold (kept for <80% band)
+    is_label_outlier: bool = False  # True if soh_true deviates > threshold from local rolling median
+
+    def soh_band(self, eol_threshold: float = 80.0) -> str:
+        """Classify cycle into standard evaluation SOH bands (>90%, 80-90%, <EOL)."""
+        if self.soh_true > 90.0:
+            return ">90%"
+        if self.soh_true >= eol_threshold:
+            return f"{int(round(eol_threshold))}-90%"
+        return f"<{int(round(eol_threshold))}%"
 
 
 @dataclass

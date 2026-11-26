@@ -7,6 +7,20 @@ voltage_window:
   quantization_step: 0.01  # 10 mV grid for fast window caching
   grid_step: 0.002         # 2 mV uniform resampled curve grid
 
+preprocessing:
+  cc_current_tolerance: 0.05  # +/-5% relative tolerance around nominal CC current
+  cc_min_points: 20           # Minimum contiguous CC samples per cycle
+  cc_min_voltage_span: 0.15   # Minimum net CC voltage rise (V)
+  cc_v_min_valid: 2.0         # Physical lower bound (V) to reject sensor glitches
+  cc_v_max_valid: 4.5         # Physical upper bound (V) to reject sensor glitches
+  savgol_time_window: 11      # Time-domain Savitzky-Golay smoothing window (samples)
+  savgol_grid_window: 11      # 2 mV voltage-grid Savitzky-Golay smoothing window for Q/dQ/dV (22 mV)
+  savgol_thermal_window: 35   # Stronger 2 mV Savitzky-Golay window for T/dT/dV (70 mV) across all datasets
+  savgol_polyorder: 2         # Savitzky-Golay polynomial order
+  regeneration_jump_pct: 1.0  # Upward SOH jump (%) threshold to flag capacity regeneration
+  label_outlier_window: 5     # Rolling median window size for SOH label outlier detection
+  label_outlier_threshold_pct: 2.0  # Deviation (%) from rolling median to flag label outlier
+
 optimization:
   budget: 1000             # Total fitness evaluations per fold
   population_size: 40
