@@ -1,6 +1,6 @@
 """Numba-accelerated Sample Entropy and signal complexity metrics."""
 
-from typing import Dict
+from typing import Dict, Optional
 
 import numpy as np
 from numba import njit
@@ -35,8 +35,18 @@ def sample_entropy_numba(signal: np.ndarray, m: int = 2, r: float = 0.2) -> floa
     return float(-np.log(count_m1 / count_m))
 
 
-def extract_entropy_features(v_sub: np.ndarray, dq_sub: np.ndarray) -> Dict[str, float]:
-    """Extract 8 complexity and entropy features."""
+def extract_entropy_features(
+    v_sub: np.ndarray,
+    dq_sub: np.ndarray,
+    tau_sub: Optional[np.ndarray] = None,
+) -> Dict[str, float]:
+    """Extract 8 complexity and entropy features on cycle-varying signals.
+
+    Because v_sub lies on a fixed uniform 2 mV voltage grid (identical across cycles),
+    voltage-domain entropy metrics reconstruct the true uniform-time voltage curve V(tau)
+    and voltage rate dV/dtau from (v_sub, tau_sub), while spectral and Hjorth metrics
+    operate on the non-monotonic incremental capacity curve dQ/dV.
+    """
     n_pts = len(v_sub)
     if n_pts < 5:
         return {
@@ -53,41 +63,56 @@ def extract_entropy_features(v_sub: np.ndarray, dq_sub: np.ndarray) -> Dict[str,
             ]
         }
 
-    se_v = sample_entropy_numba(v_sub)
-    se_dq = sample_entropy_numba(dq_sub)
+    # Reconstruct uniform-time V(tau) and dV/dtau from (v_sub, tau_sub)
+    if tau_sub is not None and len(tau_sub) == n_pts and float(tau_sub[-1] - tau_sub[0]) > 1e-9:
+        tau_uniform = np.linspace(float(tau_sub[0]), float(tau_sub[-1]), n_pts)
+        v_of_tau = np.interp(tau_uniform, tau_sub, v_sub)
+        dv_dtau = np.gradient(v_of_tau, tau_uniform)
+    else:
+        v_of_tau = np.asarray(v_sub, dtype=float)
+        dv_dtau = np.asarray(dq_sub, dtype=float)
 
-    # Shannon histogram entropy
-    hist, _ = np.histogram(v_sub, bins=min(10, n_pts // 2), density=True)
-    hist = hist[hist > 0]
-    shannon = float(-np.sum(hist * np.log(hist))) if len(hist) > 0 else 0.0
+    dq_arr = np.asarray(dq_sub, dtype=float)
 
-    # FFT dominant ratio
-    fft_vals = np.abs(np.fft.rfft(v_sub - np.mean(v_sub)))
-    if len(fft_vals) > 1 and np.sum(fft_vals) > 1e-8:
+    se_v = sample_entropy_numba(v_of_tau)
+    se_dq = sample_entropy_numba(dq_arr)
+
+    # Discrete Shannon entropy of uniform-time V(tau) occupancy across voltage bins
+    counts, _ = np.histogram(v_of_tau, bins=min(10, n_pts // 2))
+    counts = counts[counts > 0]
+    if len(counts) > 0:
+        probs_h = counts / np.sum(counts)
+        shannon = float(-np.sum(probs_h * np.log(probs_h)))
+    else:
+        shannon = 0.0
+
+    # FFT dominant frequency ratio on non-monotonic dQ/dV curve
+    fft_vals = np.abs(np.fft.rfft(dq_arr - np.mean(dq_arr)))
+    if len(fft_vals) > 1 and np.sum(fft_vals[1:]) > 1e-8:
         fft_ratio = float(np.max(fft_vals[1:]) / np.sum(fft_vals[1:]))
     else:
         fft_ratio = 1.0
 
-    # Permutation entropy (order 3)
+    # Permutation entropy (order 3) on non-monotonic voltage rate dV/dtau
     perm_ent = 0.0
     if n_pts >= 4:
-        patterns = []
-        for i in range(n_pts - 2):
-            patterns.append(tuple(np.argsort(v_sub[i : i + 3])))
-        _, counts = np.unique(patterns, axis=0, return_counts=True)
-        probs = counts / np.sum(counts)
+        patterns = [tuple(np.argsort(dv_dtau[i : i + 3])) for i in range(n_pts - 2)]
+        _, p_counts = np.unique(patterns, axis=0, return_counts=True)
+        probs = p_counts / np.sum(p_counts)
         perm_ent = float(-np.sum(probs * np.log(probs)))
 
-    # Hjorth parameters
-    diff1 = np.diff(v_sub)
+    # Hjorth parameters on non-monotonic dQ/dV curve
+    diff1 = np.diff(dq_arr)
     diff2 = np.diff(diff1)
-    var0 = np.var(v_sub)
-    var1 = np.var(diff1) if len(diff1) > 0 else 1e-8
-    var2 = np.var(diff2) if len(diff2) > 0 else 1e-8
+    var0 = float(np.var(dq_arr))
+    var1 = float(np.var(diff1)) if len(diff1) > 0 else 0.0
+    var2 = float(np.var(diff2)) if len(diff2) > 0 else 0.0
 
-    activity = float(var0)
-    mobility = float(np.sqrt(max(var1 / max(var0, 1e-8), 0.0)))
-    complexity = float(np.sqrt(max((var2 / max(var1, 1e-8)), 0.0)) / max(mobility, 1e-8))
+    activity = var0
+    mobility = float(np.sqrt(var1 / max(var0, 1e-12))) if var0 > 1e-12 else 0.0
+    complexity = (
+        float(np.sqrt(var2 / max(var1, 1e-12)) / max(mobility, 1e-12)) if (var1 > 1e-12 and mobility > 1e-12) else 0.0
+    )
 
     return {
         "sampen_voltage": se_v,

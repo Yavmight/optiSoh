@@ -73,7 +73,7 @@ def extract_all_window_features(
     feats: Dict[str, float] = {}
     feats.update(extract_ic_features(v_sub, dq_sub))
     feats.update(extract_thermal_features(v_sub, dt_sub, delta_t_sub))
-    feats.update(extract_entropy_features(v_sub, dq_sub))
+    feats.update(extract_entropy_features(v_sub, dq_sub, tau_sub=tau_sub))
     feats.update(extract_kinetics_features(v_sub, tau_sub, q_sub))
     feats.update(extract_coupling_features(v_sub, q_sub, dq_sub, dt_sub))
 

@@ -46,3 +46,55 @@ def test_feature_extraction_on_synthetic_cycle(synthetic_bundle):
     assert len(feats) == 42
     for val in feats.values():
         assert np.isfinite(val)
+    assert feats["shannon_entropy_voltage"] >= 0.0
+
+
+def test_p2_1_previously_dead_features_vary_across_aging():
+    """Verify the 8 entropy/kinetics features are non-constant on a fixed uniform voltage grid."""
+    v = np.arange(3.60, 4.101, 0.002)
+    rows = []
+    # Simulate 8 aging states with shifting IC peak and nonlinear charging time tau(V)
+    for step in range(8):
+        peak_v = 3.74 + 0.015 * step
+        peak_h = 2.0 - 0.12 * step
+        dq = peak_h * np.exp(-0.5 * ((v - peak_v) / (0.04 + 0.005 * step)) ** 2) + 0.35 + 0.02 * np.sin(25 * v + step)
+        q = np.cumsum(dq) * 0.002
+        q -= q[0]
+        tau = q * (1.2 + 0.1 * step) + 0.05 * (v - v[0]) ** 2
+        delta_t = 1.5 * q + 0.2 * (v - v[0])
+        dt = np.gradient(delta_t, v)
+        rows.append(extract_all_window_features(v, q, dq, delta_t, dt, tau))
+
+    target_feats = [
+        "sampen_voltage",
+        "perm_entropy_voltage",
+        "shannon_entropy_voltage",
+        "fft_dominant_ratio",
+        "hjorth_activity",
+        "hjorth_mobility",
+        "hjorth_complexity",
+        "quartile_skewness",
+    ]
+    for name in target_feats:
+        vals = np.array([r[name] for r in rows], dtype=float)
+        assert np.all(np.isfinite(vals)), f"{name} produced non-finite value"
+        assert np.std(vals) > 1e-6, f"{name} is still constant across cycles (std={np.std(vals)})"
+
+
+def test_p2_2_temp_ratio_bounded_and_shift_invariant():
+    """Verify temp_ratio_end_start stays bounded in [-1, 1] when delta_t starts at 0.0."""
+    v = np.linspace(3.60, 4.10, 100)
+    q = np.linspace(0.0, 0.7, 100)
+    dq = np.gradient(q, v)
+    tau = np.linspace(0.0, 1.0, 100)
+    # Re-zeroed delta_t starting at exact 0.0 (previously caused 1.5 / 1e-4 = 15,000 explosion)
+    delta_t = 1.5 * ((v - v[0]) / (v[-1] - v[0])) ** 2
+    dt = np.gradient(delta_t, v)
+
+    feats_zeroed = extract_all_window_features(v, q, dq, delta_t, dt, tau)
+    feats_shifted = extract_all_window_features(v, q, dq, delta_t + 25.0, dt, tau)
+
+    r0 = feats_zeroed["temp_ratio_end_start"]
+    r_shift = feats_shifted["temp_ratio_end_start"]
+    assert -1.0 <= r0 <= 1.0
+    assert np.isclose(r0, r_shift, atol=1e-9)

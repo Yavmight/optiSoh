@@ -42,8 +42,8 @@ def extract_kinetics_features(
     mid_idx = int(np.argmin(np.abs(v_sub - v_mid)))
     mid_ratio = float((tau_sub[mid_idx] - tau_sub[0]) / max(duration, 1e-4))
 
-    # Quartile skewness of voltage profile
-    q25, q50, q75 = np.percentile(v_sub, [25, 50, 75])
+    # Quartile skewness of normalized charging time profile across the voltage window
+    q25, q50, q75 = np.percentile(tau_sub, [25, 50, 75])
     denom = max(q75 - q25, 1e-6)
     q_skew = float(((q75 - q50) - (q50 - q25)) / denom)
 
