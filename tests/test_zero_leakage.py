@@ -69,15 +69,16 @@ def test_zero_leakage_end_to_end_stacked_ensemble():
 
 
 def test_zero_leakage_end_to_end_feature_selection():
-    """Verify feature selector on training cells is immune to test cell content."""
+    """Verify cell-grouped feature selector on training cells is immune to test cell content."""
     rng = np.random.RandomState(42)
-    X_train = rng.randn(50, 15)
+    X_train = rng.randn(60, 15)
     y_train = 90.0 - 0.5 * X_train[:, 2] + 0.3 * X_train[:, 5]
+    train_cells = np.repeat(["Cell_1", "Cell_2", "Cell_3"], 20)
 
     baseline_a = TwoStageFeatureSelectionBaseline(selector="lasso", n_features_to_select=5, random_state=42)
-    baseline_a.fit(X_train, y_train)
+    baseline_a.fit(X_train, y_train, cell_indices=train_cells)
 
     baseline_b = TwoStageFeatureSelectionBaseline(selector="lasso", n_features_to_select=5, random_state=42)
-    baseline_b.fit(X_train, y_train)
+    baseline_b.fit(X_train, y_train, cell_indices=train_cells)
 
     np.testing.assert_array_equal(baseline_a.selected_indices_, baseline_b.selected_indices_)

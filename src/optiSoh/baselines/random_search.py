@@ -4,8 +4,9 @@ from typing import Any, Callable, Dict, List
 
 import numpy as np
 
+from ..contracts.constants import WINDOW_END_MAX, WINDOW_END_MIN, WINDOW_START_MAX, WINDOW_START_MIN
 from ..optimization.base import BaseOptimizer, EvaluationBudgetCounter
-from ..optimization.search_space import repair_decision_vector
+from ..optimization.search_space import repair_decision_vector, sample_random_hyperparams
 
 
 class RandomSearchOptimizer(BaseOptimizer):
@@ -21,17 +22,12 @@ class RandomSearchOptimizer(BaseOptimizer):
         history: List[Dict[str, Any]] = []
 
         while self.budget_counter.step(1):
-            v_start = float(self.rng.uniform(3.60, 3.95))
-            v_end = float(self.rng.uniform(3.75, 4.10))
+            v_start = float(self.rng.uniform(WINDOW_START_MIN, WINDOW_START_MAX))
+            v_end = float(self.rng.uniform(WINDOW_END_MIN, WINDOW_END_MAX))
             mask = self.rng.random(self.n_features) > 0.5
             v_start, v_end, mask = repair_decision_vector(v_start, v_end, mask)
 
-            hyperparams = {
-                "svr_c": float(10 ** self.rng.uniform(-1, 2)),
-                "rf_n_estimators": int(self.rng.choice([50, 100, 150])),
-                "rf_max_depth": int(self.rng.integers(2, 8)),
-                "xgb_learning_rate": float(self.rng.uniform(0.01, 0.2)),
-            }
+            hyperparams = sample_random_hyperparams(self.rng)
 
             candidate = {
                 "v_start": v_start,

@@ -5,8 +5,9 @@ from typing import Any, Callable, Dict, List
 import numpy as np
 import optuna
 
+from ..contracts.constants import WINDOW_END_MAX, WINDOW_END_MIN, WINDOW_START_MAX, WINDOW_START_MIN
 from ..optimization.base import BaseOptimizer, EvaluationBudgetCounter
-from ..optimization.search_space import repair_decision_vector
+from ..optimization.search_space import repair_decision_vector, suggest_optuna_hyperparams
 
 optuna.logging.set_verbosity(optuna.logging.WARNING)
 
@@ -28,17 +29,12 @@ class OptunaTPEOptimizer(BaseOptimizer):
             if not self.budget_counter.step(1):
                 raise optuna.exceptions.TrialPruned()
 
-            v_start = trial.suggest_float("v_start", 3.60, 3.95)
-            v_end = trial.suggest_float("v_end", 3.75, 4.10)
+            v_start = trial.suggest_float("v_start", WINDOW_START_MIN, WINDOW_START_MAX)
+            v_end = trial.suggest_float("v_end", WINDOW_END_MIN, WINDOW_END_MAX)
             mask = np.array([trial.suggest_categorical(f"feat_{i}", [True, False]) for i in range(self.n_features)])
             v_start, v_end, mask = repair_decision_vector(v_start, v_end, mask)
 
-            hyperparams = {
-                "svr_c": trial.suggest_float("svr_c", 0.1, 100.0, log=True),
-                "rf_n_estimators": trial.suggest_categorical("rf_n_estimators", [50, 100, 150]),
-                "rf_max_depth": trial.suggest_int("rf_max_depth", 2, 8),
-                "xgb_learning_rate": trial.suggest_float("xgb_learning_rate", 0.01, 0.2),
-            }
+            hyperparams = suggest_optuna_hyperparams(trial)
 
             candidate = {
                 "v_start": v_start,
